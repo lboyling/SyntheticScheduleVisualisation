@@ -20,7 +20,7 @@ $AppCount = 0
 
 #Discover log files
 $LogFolder = ".\"
-$LogFiles = Get-ChildItem $LogFolder | where {$_.extension -eq ".log"}
+$LogFiles = Get-ChildItem $LogFolder | where {$_.extension -eq ".log"} | sort @{Expression={$_.LastWriteTime.Date}; Ascending=$true}, Name
 if($LogFiles -eq $null)
 {
 	Write-Output "No log files in current folder to process. Script will end."
