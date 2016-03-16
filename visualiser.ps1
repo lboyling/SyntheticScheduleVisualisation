@@ -391,6 +391,7 @@ for($x = 0; $x -lt $NumberOfRobots; $x++)
 	{
 		#Write-Output "Test EQ NOT 80"
 		$image.FillRectangle($brushNotRunning,$leftOffset + $x * $ColumnWidth + 2,$TopOffset + $StartCount[$x] % $DisplayLength,$ColumnWidth - 5,($y - 1) % $DisplayLength)
+		$Image.FillRectangle($brushSuccessful,$leftOffset+ $x * $ColumnWidth + 2,$TopOffset + ($StartCount[$x] % $DisplayLength),$StatusWidth,($y - 1) % $DisplayLength)
 	}
 }
 for($z = 0; $z -le $DisplayLength; $z += 900)
