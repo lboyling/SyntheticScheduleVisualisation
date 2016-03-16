@@ -15,11 +15,27 @@ $AppHash = @{}
 $AppCount = 0
 
 
-#Output all discovered transactions to a log file for outside analysis
+#Discover log files
 $LogFolder = ".\"
 $LogFiles = Get-ChildItem $LogFolder | where {$_.extension -eq ".log"}
-$OutputLog = ".\transactions.csv"
+if($LogFiles -eq $null)
+{
+	Write-Output "No log files in current folder to process. Script will end."
+	exit
+}
+$LogFiles = @($LogFiles)
 
+
+$OutputFolder = ".\output"
+#Output all discovered transactions to a log file for outside analysis
+$OutputLog = "$OutputFolder\transactions.csv"
+
+if(!(Test-Path $OutputFolder))
+{
+	New-Item -ItemType directory -Path ".\output"
+	$Folder = Get-Item $OutputFolder
+	Write-Output "Created output folder"
+}
 if(Test-Path $OutputLog)
 {
 	Clear-Content $OutputLog
@@ -114,6 +130,7 @@ for($x = 0; $x -lt $NumberOfRobots; $x++)
 			Add-Content $OutputLog "$LogPath, $AppName, $StartDate, $EndDate, $Duration, FALSE"
 		}
 	}
+	$reader.Dispose()
 	Write-Output ("{0:D2}: Parsing finished" -f ($x + 1))
 }
 
