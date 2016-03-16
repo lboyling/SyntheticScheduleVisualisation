@@ -1,4 +1,7 @@
-
+Write-Output " "
+Write-Output "Dynatrace Enterprise Synthetic Schedule Visualiser"
+Write-Output "Luke Boyling - 2016"
+Write-Output "luke.boyling@dynatrace.com"
 #*********************************************************************
 # Preparing for analysing the Logs
 #*********************************************************************
@@ -71,7 +74,9 @@ $Midnight = (Get-Date).Date
 #*********************************************************************
 # Analysing the Logs
 #*********************************************************************
-
+Write-Output " "
+Write-Output "Parsing Phase"
+Write-Output " "
 for($x = 0; $x -lt $NumberOfRobots; $x++)
 {
 	$LogPath = $LogFiles[$x]
@@ -80,7 +85,7 @@ for($x = 0; $x -lt $NumberOfRobots; $x++)
 	$StartSeconds = 0
 	
 	# Read and parse log to find key events for starting and ending transactions
-	Write-Output ("{0:D2}: Parsing $LogPath" -f ($x + 1))
+	Write-Output ("Parsing {0:D1} of {1:D1} log files: $LogPath" -f ($x + 1), $LogFiles.Count)
 		
 	
 	# Process parsed events to build the schedule for the day	
@@ -98,7 +103,7 @@ for($x = 0; $x -lt $NumberOfRobots; $x++)
 				$AppNames[$AppCount] = $AppName
 				$AppCount++
 				
-				Write-Output "AppName: $($AppName):  $($AppHash.Get_Item($AppName))"
+				Write-Output ("Found new application $AppName - {0:D} applications discovered" -f ($AppCount))
 			}
 			$StartDate = [datetime]$matches[2]
 			$StartSeconds = (New-TimeSpan -Start $StartDate.Date -End $StartDate).totalSeconds
@@ -131,10 +136,8 @@ for($x = 0; $x -lt $NumberOfRobots; $x++)
 		}
 	}
 	$reader.Dispose()
-	Write-Output ("{0:D2}: Parsing finished" -f ($x + 1))
+	Write-Output ("Parsing {0:D1} of {1:D1} log files complete" -f ($x + 1), $LogFiles.Count)
 }
-
-
 
 #*********************************************************************
 # Preparing for Drawing the Images
@@ -198,7 +201,9 @@ $AppColors[9] = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::Fr
 #*********************************************************************
 # Drawing the Images
 #*********************************************************************
-
+Write-Output " "
+Write-Output "Processing Phase"
+Write-Output " "
 $BMP = New-Object System.Drawing.Bitmap ($BMPWidth, $BMPHeight)
 $Image = [System.Drawing.Graphics]::FromImage($BMP)
 
@@ -253,7 +258,7 @@ for($y = 0; $y -lt $SecondsInADay; $y++)
 			$Image.Dispose()
 			
 			
-			$Output = "Saved chart for {0:hh:mm tt}" -f $PeriodStart
+			$Output = "Saved {0:D} of 24 files: {1:hh:mm tt}" -f ($Hour + 1), $PeriodStart
 			$Output = "$Output - {0:hh:mm tt}" -f $PeriodEnd
 			Write-Output $Output
 			$BMP.Save(".\Output\output$Hour.png","PNG")
@@ -372,7 +377,7 @@ for($y = 0; $y -lt $SecondsInADay; $y++)
 # Final Image - Wrap Up last element
 $PeriodStart = $Midnight.AddSeconds($y - $DisplayLength)
 $PeriodEnd = $Midnight.AddSeconds($y)
-$Output = "Saved chart for {0:hh:mm tt}" -f $PeriodStart
+$Output = "Saved {0:D} of 24 files: {1:hh:mm tt}" -f ($Hour + 1), $PeriodStart
 $Output = "$Output - {0:hh:mm tt}" -f $PeriodEnd
 Write-Output $Output
 for($x = 0; $x -lt $NumberOfRobots; $x++)
