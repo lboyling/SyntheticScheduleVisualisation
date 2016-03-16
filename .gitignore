@@ -48,3 +48,4 @@ Temporary Items
 *.log
 output/output*.png
 output/transactions.csv
+~$TestLogGenerator.xlsx
